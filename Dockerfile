@@ -2,7 +2,7 @@ FROM ghcr.io/jsdelivr/globalping-probe:latest
 
 ENV GP_ADOPTION_TOKEN="" \
     WEB_USERNAME="admin" \
-    WEB_PASSWORD=""
+    WEB_PASSWORD="admin"
 
 COPY server.cjs /opt/globalping-web/server.cjs
 COPY index.html /opt/globalping-web/index.html
