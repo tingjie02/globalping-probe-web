@@ -1,70 +1,37 @@
-name: Release
+name: Build and publish to GHCR
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
-  test:
-    name: Test code
-    uses: ./.github/workflows/_tests.yaml
-
-  release:
-    name: Release new version
-
+  publish:
+    name: Build and publish image
     runs-on: ubuntu-latest
-    container: node:22-bookworm-slim
-
-    needs: test
-    environment: release
 
     permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-
-    outputs:
-      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
-      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+      contents: read
+      packages: write
 
     steps:
-      - name: Install git :)
-        run: apt update && apt install -y git
+      - name: Check out repository
+        uses: actions/checkout@v6
 
-      - uses: actions/checkout@v7
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          ssh-key: ${{ secrets.RELEASE_SSH_KEY }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Change directory ownership to the node user
-        run: chown -R node:node .
-
-      - name: Mark the working directory as safe
-        run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
-
-      - name: Build
-        run: su node -c 'npm install && npm run build && git config --unset core.hooksPath'
-
-      - name: Prune dev dependencies
-        run: su node -c 'npm install --omit=dev --omit=optional'
-
-      - name: Release
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v6
+      - name: Build and push image
+        uses: docker/build-push-action@v6
         with:
-          extra_plugins: |
-            @semantic-release/git
-            @semantic-release/exec
-            conventional-changelog-conventionalcommits@^8.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  publish:
-    needs: release
-
-    if: needs.release.outputs.new_release_published == 'true'
-
-    uses: ./.github/workflows/_docker.yaml
-    with:
-      ref: v${{ needs.release.outputs.new_release_version }}
-      publish: true
-    secrets:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/tingjie02/globalping-probe-web:latest
+          labels: |
+            org.opencontainers.image.source=https://github.com/tingjie02/globalping-probe-web
