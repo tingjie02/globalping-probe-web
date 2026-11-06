@@ -2,19 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [ "*" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "*" ]
+    branches: ["**"]
 
 jobs:
   test-code:
     name: Test code
     uses: ./.github/workflows/_tests.yaml
+
   test-docker:
-    name: Test docker
-    uses: ./.github/workflows/_docker.yaml
-    with:
-      ref: ${{ github.ref }}
-      publish: false
-    secrets:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    name: Test Docker build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
