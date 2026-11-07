@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}} · Globalping Probe</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { display: grid; min-height: 100vh; margin: 0; padding: 24px; place-items: center; background: #f1f4f0; color: #17322f; font-family: system-ui, sans-serif; }
+    main { width: min(420px, 100%); padding: 36px; border: 1px solid #dce5df; border-radius: 22px; background: white; box-shadow: 0 24px 70px #21433414; }
+    .brand { color: #28734b; font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+    h1 { margin: 26px 0 8px; font-size: 30px; letter-spacing: -.04em; }
+    p { color: #60746a; font-size: 14px; line-height: 1.6; }
+    label { display: block; margin: 20px 0 8px; font-size: 13px; font-weight: 650; }
+    input { width: 100%; padding: 12px; border: 1px solid #d5e0d9; border-radius: 10px; color: #17322f; font: inherit; }
+    input:focus-visible, button:focus-visible { outline: 3px solid #4da878; outline-offset: 2px; }
+    button { width: 100%; margin-top: 22px; padding: 14px; border: 0; border-radius: 10px; background: #173f33; color: white; font-weight: 700; cursor: pointer; }
+    .error { color: #a52b2b; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand">◎ &nbsp; GLOBALPING / PROBE</div>
+    <h1>{{TITLE}}</h1>
+    <p>Enter your account details to continue. For initial setup, choose a password of at least 12 characters.</p>
+    <p class="error" role="alert">{{ERROR}}</p>
+    <form method="post" action="{{ACTION}}">
+      <label for="username">Username</label>
+      <input id="username" name="username" autocomplete="username" maxlength="64" required>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" maxlength="256" required>
+      <button type="submit">{{BUTTON}}</button>
+    </form>
+  </main>
+</body>
+</html>
