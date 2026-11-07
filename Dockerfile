@@ -1,11 +1,11 @@
 FROM ghcr.io/jsdelivr/globalping-probe:latest
 
-ENV GP_ADOPTION_TOKEN="" \
-    WEB_USERNAME="admin" \
-    WEB_PASSWORD="admin"
+ENV WEB_USERNAME="admin" \
+    WEB_PASSWORD="ChangeMe123"
 
 COPY server.cjs /opt/globalping-web/server.cjs
 COPY index.html /opt/globalping-web/index.html
+COPY login.html /opt/globalping-web/login.html
 COPY start.sh /opt/globalping-web/start.sh
 
 EXPOSE 8080
